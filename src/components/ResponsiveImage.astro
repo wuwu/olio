@@ -1,0 +1,28 @@
+---
+interface ResponsiveImageProps {
+	src: string;
+	alt: string;
+	sizes?: string;
+	srcSet: {
+		src: string;
+		width: number;
+	}[];
+}
+
+const {
+	src,
+	alt,
+	sizes = "100vw",
+	srcSet,
+} = Astro.props as ResponsiveImageProps;
+---
+
+<div class="m-16">
+	<img
+		src={src}
+		alt={alt}
+		sizes={sizes}
+		srcset={srcSet.map(({ src, width }) => `${src} ${width}w`).join(", ")}
+		class="width: 100%; height: auto;"
+	/>
+</div>

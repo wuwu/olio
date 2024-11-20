@@ -1,0 +1,18 @@
+/* src/styles/global.css */
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .olio-input {
+    @apply input input-bordered w-full rounded-none border-zinc-700 p-2;
+  }
+  .olio-label {
+    @apply block text-xs font-semibold uppercase pb-1 text-zinc-500;
+  }
+  .olio-error {
+    @apply text-red-700 text-xs uppercase font-semibold mt-1;
+  }
+}
