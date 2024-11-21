@@ -1,6 +1,4 @@
 import React, { useState, useCallback } from "react";
-import { getGoogleSheetsClient } from "../utils/googleSheetClient";
-// import { updateStockData } from "../utils/googleSheetClient";
 
 const OrderForm = () => {
   // Separate state for each field
@@ -17,30 +15,6 @@ const OrderForm = () => {
   const [deliveryOption, setDeliveryOption] = useState("delivery");
   const [isCompany, setIsCompany] = useState(false);
   const [isDifferentDelivery, setIsDifferentDelivery] = useState(false);
-
- const updateStockData = async (data: (string | number)[][]) => {
-  try {
-    const sheets = await getGoogleSheetsClient();
-
-    const spreadsheetId = process.env.SPREADSHEET_ID!;
-    const range = "orders!A2:R"; // Referencing 'orders' sheet specifically
-
-    const response = await sheets.spreadsheets.values.update({
-      spreadsheetId,
-      range,
-      valueInputOption: "RAW",
-      requestBody: {
-        values: data,
-      },
-    });
-
-    console.log("Update response:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Error updating stock data:", error);
-    throw error;
-  }
-};
 
   // State for error handling
   const [errors, setErrors] = useState({
@@ -100,68 +74,63 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   // Handle form submission
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
-  console.log("handle submit");
-  
-  // Check if we're running on the client-side (window exists)
-  if (typeof window !== "undefined") {
-    console.log("Client-side execution detected.");
-    
-    if (!validateForm()) {
-      // Static test data (replace this later with formData values)
-      const staticData = [
-        [
-          "Name",
-          "PID",
-          "Email",
-          "Quantity",
-          "Status",
-          "Company",
-          "Date",
-          "Paid",
-          "Street",
-          "PLZ",
-          "City",
-          "Country",
-          "Delivery",
-          "Delivery Street",
-          "Delivery PLZ",
-          "Delivery City",
-          "Delivery Country",
-          "Comment",
-        ],
-        [
-          "John Doe",
-          "12345",
-          "john.doe@example.com",
-          10,
-          "Shipped",
-          "Example Co.",
-          "2024-11-18",
-          "Yes",
-          "Main St.",
-          "10001",
-          "New York",
-          "USA",
-          "DHL",
-          "Second St.",
-          "10002",
-          "Brooklyn",
-          "USA",
-          "No comment",
-        ],
-      ];
 
-      try {
-        const response = await updateStockData(staticData); // Replace staticData with actual formData
-        console.log("Update Response:", response);
-        alert("Data successfully sent to Google Sheets!");
-      } catch (error) {
-        console.error("Error updating data:", error);
-        alert("Failed to update Google Sheets.");
-      }
-    }
-  } else {
-    console.warn("Window object is not available. Skipping client-side API call.");
+  const formData = [
+    [
+      "Name",
+      "PID",
+      "Email",
+      "Quantity",
+      "Status",
+      "Company",
+      "Date",
+      "Paid",
+      "Street",
+      "PLZ",
+      "City",
+      "Country",
+      "Delivery",
+      "Delivery Street",
+      "Delivery PLZ",
+      "Delivery City",
+      "Delivery Country",
+      "Comment",
+    ],
+    [
+      "John Doe",
+      "12345",
+      "john.doe@example.com",
+      10,
+      "Shipped",
+      "Example Co.",
+      "2024-11-18",
+      "Yes",
+      "Main St.",
+      "10001",
+      "New York",
+      "USA",
+      "DHL",
+      "Second St.",
+      "10002",
+      "Brooklyn",
+      "USA",
+      "No comment",
+    ],
+  ];
+
+  try {
+    const response = await fetch("/.netlify/functions/updateGoogleSheets", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: formData }),
+    });
+
+    const result = await response.json();
+    console.log("Serverless Function Response:", result);
+    alert("Data successfully sent to Google Sheets!");
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    alert("Failed to update Google Sheets.");
   }
 };
 

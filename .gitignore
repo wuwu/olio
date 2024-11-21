@@ -23,3 +23,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 src/olio-di-oliva-2cb76a414434.json
+
+# Local Netlify folder
+.netlify
