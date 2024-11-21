@@ -1,0 +1,51 @@
+---
+import { google } from "googleapis";
+import dotenv from "dotenv";
+import { getGoogleSheetsClient } from "../utils/googleSheetClient";
+
+// Load environment variables from .env file
+dotenv.config();
+
+// Type for the stock response
+// type StockResponse = {
+//   values?: string[][] | undefined;
+// };
+
+const getRemainingStock = async (): Promise<number | string> => {
+  try {
+    const sheets = await getGoogleSheetsClient();
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SPREADSHEET_ID!,
+      range: "Stock!C2", // Cell containing Remaining Stock
+    });
+
+    const remainingStock = response.data.values?.[0]?.[0];
+
+    const remainingStockNumber = remainingStock
+      ? parseFloat(remainingStock)
+      : NaN;
+
+    return isNaN(remainingStockNumber)
+      ? "N/A"
+      : Math.round(remainingStockNumber);
+  } catch (error) {
+    console.error("Error fetching stock data:", error);
+    return "Error";
+  }
+};
+
+const stockData = await getRemainingStock();
+---
+
+<div class="w-full grid grid-cols-2 bg-gray-50 gap-4 p-4">
+  <p class="text-2xl place-self-end font-bodoni">2024 Harvest:</p>
+  <p class="text-2xl">
+    <span class="text-slate-800 font-bold">125</span>
+    litri
+  </p>
+  <p class="text-2xl place-self-end font-bodoni italic">Left for sale:</p>
+  <p class="text-2xl">
+    <span class="text-lime-600 font-bold">{stockData}</span>
+    litri
+  </p>
+</div>

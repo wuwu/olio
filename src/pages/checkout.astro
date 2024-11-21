@@ -1,0 +1,14 @@
+---
+import Layout from "../layouts/Layout.astro";
+import NavigationBar from "../components/NavigationBar";
+import OrderForm from "../components/OrderForm.tsx";
+---
+
+<Layout title="Olio Extra Vergine !!!">
+	<NavigationBar client:only="react" />
+	<div class="container max-w-screen mx-auto px-4">
+		<OrderForm client:only="react" />
+	</div>
+</Layout>
+
+<style></style>
