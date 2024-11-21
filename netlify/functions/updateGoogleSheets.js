@@ -1,6 +1,6 @@
 const { google } = require("googleapis");
 
-exports.handler = async (event) => {
+export async function handler (event) {
   try {
     // Check if the request method is POST
     if (event.httpMethod !== "POST") {
