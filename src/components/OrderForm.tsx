@@ -119,7 +119,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   ];
 
   try {
-    const response = await fetch("/.netlify/functions/update-google-sheets", {
+    const response = await fetch("/.netlify/functions/updateGoogleSheets", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ data: formData }),

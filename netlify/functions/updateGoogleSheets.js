@@ -24,7 +24,7 @@ export async function handler (event) {
     const sheets = google.sheets({ version: "v4", auth });
 
     // Define spreadsheet and range
-    const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID; // Store in Netlify environment variables
+    const spreadsheetId = process.env.SPREADSHEET_ID; // Store in Netlify environment variables
     const range = "orders!A2:R"; // Adjust range as needed
 
     // Update Google Sheets with provided data
