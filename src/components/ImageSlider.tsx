@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 import ImageSlide from "./ImageSlide"
 
 type Image = {
@@ -7,10 +7,6 @@ type Image = {
   alt: string,
   title: string,
   headline?: string
-}
-
-interface SliderProps {
-  images: Image[],
 }
 
 const ImageSlider = () => {

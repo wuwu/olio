@@ -1,26 +1,19 @@
 ---
 import { google } from "googleapis";
 import dotenv from "dotenv";
+import { getGoogleSheetsClient } from "../utils/googleSheetClient";
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Type for the stock response
-type StockResponse = {
-  values?: string[][] | undefined;
-};
+// type StockResponse = {
+//   values?: string[][] | undefined;
+// };
 
 const getRemainingStock = async (): Promise<number | string> => {
   try {
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL!,
-        private_key: process.env.GOOGLE_PRIVATE_KEY!.replace(/\\n/g, "\n"),
-      },
-      scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
-    });
-
-    const sheets = google.sheets({ version: "v4", auth });
+    const sheets = await getGoogleSheetsClient();
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.SPREADSHEET_ID!,
       range: "Stock!C2", // Cell containing Remaining Stock
@@ -28,17 +21,16 @@ const getRemainingStock = async (): Promise<number | string> => {
 
     const remainingStock = response.data.values?.[0]?.[0];
 
-    // Check if the response is a valid number
     const remainingStockNumber = remainingStock
       ? parseFloat(remainingStock)
       : NaN;
 
     return isNaN(remainingStockNumber)
       ? "N/A"
-      : Math.round(remainingStockNumber); // Return rounded stock or "N/A"
+      : Math.round(remainingStockNumber);
   } catch (error) {
     console.error("Error fetching stock data:", error);
-    return "Error"; // Return an error message if the request fails
+    return "Error";
   }
 };
 
