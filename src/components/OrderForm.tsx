@@ -1,138 +1,192 @@
 import React, { useState, useCallback } from "react";
+import TextInput from './form/TextInput';
 
 const OrderForm = () => {
-  // Separate state for each field
-  const [salutation, setSalutation] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [postcode, setPostcode] = useState("");
-  const [country, setCountry] = useState("");
-  const [deliveryOption, setDeliveryOption] = useState("delivery");
+  const [formValues, setFormValues] = useState({
+    formattedDate: new Date(Date.now()).toLocaleDateString('de-DE'),
+    salutation: '',
+    firstName: '',
+    lastName: '',
+    companyName: '',
+    quantity: '',
+    pid: 'o_2024_0500',
+    email: '',
+    phone: '',
+    status: 'open',
+    paid: 'false',
+    street: '',
+    postcode: '',
+    city: '',
+    country: '',
+    deliveryOption: 'pickup',
+    deliverySalutation: '',
+    deliveryFirstName: '',
+    deliveryLastName: '',
+    deliveryStreet: '',
+    deliveryPostcode: '',
+    deliveryCity: '',
+    deliveryCountry: '',
+    comment: '',
+
+  });
+  
+  // form settings
   const [isCompany, setIsCompany] = useState(false);
   const [isDifferentDelivery, setIsDifferentDelivery] = useState(false);
-
+  
   // State for error handling
   const [errors, setErrors] = useState({
     salutation: "",
     firstName: "",
     lastName: "",
+    companyName: "",
     email: "",
     phone: "",
     street: "",
     city: "",
     postcode: "",
     country: "",
-
+    deliverySalutation: "",
+    deliveryFirstName: "",
+    deliveryLastName: "",
+    deliveryStreet: "",
+    deliveryPostcode: "",
+    deliveryCity: "",
+    deliveryCountry: "",
   });
 
 // Regular handleChange function without throttle
-const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  const { name, value } = e.target;
-  console.log('handleChange', name, value)
-  if (name === "salutation") setSalutation(value);
-  if (name === "firstName") setFirstName(value);
-  if (name === "lastName") setLastName(value);
-  if (name === "email") setEmail(value);
-  if (name === "phone") setPhone(value);
-  if (name === "street") setStreet(value);
-  if (name === "city") setCity(value);
-  if (name === "postcode") setPostcode(value);
-  if (name === "country") setCountry(value);
-  if (name === "deliveryOption") setDeliveryOption(value);
-  if (name === "companyName") setCompanyName(value);
-}, []);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setFormValues({ 
+      ...formValues, 
+      [name as keyof typeof formValues]: value,
+    });
+  };
 
 const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const { checked, name } = e.target;
-  console.log('select', checked, name)
   if (name === "isCompany") setIsCompany(checked); // Update the state based on the checkbox's checked status
   if (name === "isDifferentDelivery") setIsDifferentDelivery(checked); // Update the state based on the checkbox's checked status
 };
 
   // Form validation
-  const validateForm = () => {
-    const newErrors: any = {};
-    if (!salutation) newErrors.salutation = "Anrede fehlt";
-    if (!firstName) newErrors.firstName = "Vorname fehlt";
-    if (!lastName) newErrors.lastName = "Last name is required.";
-    if (!email) newErrors.email = "Email is required.";
-    if (!phone) newErrors.phone = "Phone number is required.";
-    if (!street) newErrors.street = "Street is required.";
-    if (!city) newErrors.city = "City is required.";
-    if (!postcode) newErrors.postcode = "Postcode is required.";
-    if (!country) newErrors.county = "County is required.";
+  const validateForm = (): boolean => {
+    const requiredFields: Partial<Record<keyof typeof formValues, string>> = {
+      salutation: "Anrede fehlt",
+      firstName: "Vorname fehlt",
+      lastName: "Nachname fehlt",
+      email: "E-Mail-Adresse fehlt",
+      phone: "Telefonnummer fehlt",
+      street: formValues.deliveryOption === "delivery" ? "Straße fehlt" : "",
+      city: formValues.deliveryOption === "delivery" ? "Stadt fehlt" : "",
+      postcode: formValues.deliveryOption === "delivery" ? "Postleitzahl fehlt" : "",
+      country: formValues.deliveryOption === "delivery" ? "Land fehlt" : "",
+    };
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const deliveryFields: Partial<Record<keyof typeof formValues, string>> = {
+      deliverySalutation: "Anrede fehlt",
+      deliveryFirstName: "Vorname fehlt",
+      deliveryLastName: "Nachname fehlt",
+      deliveryStreet: "Straße fehlt",
+      deliveryPostcode: "Postleitzahl fehlt",
+      deliveryCity: "Stadt fehlt",
+      deliveryCountry: "Land fehlt",
+    };
+
+    const newErrors: Partial<Record<keyof typeof formValues, string>> = {};
+
+    Object.entries(requiredFields).forEach(([field, errorMessage]) => {
+      const key = field as keyof typeof formValues;
+      // Only add error message if required field is empty (or undefined if not required)
+      if (formValues[key] === undefined || formValues[key] === "") {
+        if (errorMessage) {
+          newErrors[key] = errorMessage;
+        }
+      }
+    });
+
+    // Conditionally validate companyName if isCompany is true
+    if (isCompany && !formValues.companyName) {
+      newErrors.companyName = "Firmenname fehlt";
+    }
+
+    if (isDifferentDelivery) {
+      Object.entries(deliveryFields).forEach(([field, errorMessage]) => {
+        const key = field as keyof typeof formValues;
+        if (!formValues[key]) newErrors[key] = errorMessage;
+      });
+    }
+
+    // Log all the errors for debugging
+    console.log("Validation Errors:", JSON.stringify(newErrors));
+
+    setErrors(newErrors as typeof errors);
+
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorField = Object.keys(newErrors)[0] as keyof typeof formValues;
+      const errorElement = document.querySelector(`[name="${firstErrorField}"]`) as HTMLInputElement;
+      errorElement?.focus();
+      return false;
+    }
+
+    return true;
   };
 
   // Handle form submission
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(formValues)
+    const isValid = validateForm();
+    if (!isValid) {
+        alert("Please correct the errors before submitting.");
+        return;
+      }
 
-  const formData = [
-    [
-      "Name",
-      "PID",
-      "Email",
-      "Quantity",
-      "Status",
-      "Company",
-      "Date",
-      "Paid",
-      "Street",
-      "PLZ",
-      "City",
-      "Country",
-      "Delivery",
-      "Delivery Street",
-      "Delivery PLZ",
-      "Delivery City",
-      "Delivery Country",
-      "Comment",
-    ],
-    [
-      "John Doe",
-      "12345",
-      "john.doe@example.com",
-      10,
-      "Shipped",
-      "Example Co.",
-      "2024-11-18",
-      "Yes",
-      "Main St.",
-      "10001",
-      "New York",
-      "USA",
-      "DHL",
-      "Second St.",
-      "10002",
-      "Brooklyn",
-      "USA",
-      "No comment",
-    ],
-  ];
+    const formData = [
+      [
+        formValues.formattedDate,
+        formValues.salutation,
+        formValues.firstName,
+        formValues.lastName,
+        formValues.companyName ?? "",
+        formValues.quantity,
+        formValues.pid,
+        formValues.email,
+        formValues.phone ?? "",
+        formValues.status,
+        formValues.paid ?? "",
+        formValues.street ?? "",
+        formValues.postcode ?? "",
+        formValues.city ?? "",
+        formValues.country ?? "",
+        formValues.deliveryOption ?? "",
+        formValues.deliverySalutation ?? "",
+        formValues.deliveryFirstName ?? "",
+        formValues.deliveryLastName ?? "",
+        formValues.deliveryStreet ?? "",
+        formValues.deliveryPostcode ?? "",
+        formValues.deliveryCity ?? "",
+        formValues.deliveryCountry ?? "",
+        formValues.comment ?? "",
+      ],
+    ];
 
-  try {
-    const response = await fetch("/.netlify/functions/updateGoogleSheets", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: formData }),
-    });
+    try {
+      const response = await fetch("/.netlify/functions/updateGoogleSheets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: formData }),
+      });
 
-    const result = await response.json();
-    console.log("Serverless Function Response:", result);
-    alert("Data successfully sent to Google Sheets!");
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    alert("Failed to update Google Sheets.");
-  }
-};
+      const result = await response.json();
+      console.log("Serverless Function Response:", result);
+      alert("Data successfully sent to Google Sheets!");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Failed to update Google Sheets.");
+    }
+  };
 
 
   return (
@@ -142,177 +196,118 @@ const handleSubmit = async (e: React.FormEvent) => {
       >
         <h3 className="text-xl uppercase text-center mb-6">Persönliche Daten</h3>
         <div className="row flex mb-4">
-          <div className="w-2/5">
-            <label htmlFor="anrede" className="olio-label">
-              Anrede *
-            </label>
-            <select onChange={handleChange} className="select input-bordered rounded-none w-full max-w-xs" title="salutation" name="salutation">
-              <option disabled selected>Anrede</option>
-              <option>Herr</option>
-              <option>Frau</option>
-              <option>Divers</option>
-            </select>
-          {errors.salutation && (
-            <p className="olio-error">{errors.firstName}</p>
-          )}
-          </div>
-          {/* First Name */}
-          <div className="flex-grow ml-4">
-          <label htmlFor="lastName" className="olio-label">
-            Vorname *
+          {/* Anrede */}
+        <div className="w-2/5">
+          <label htmlFor="salutation" className="olio-label">
+            Anrede *
           </label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={firstName}
+          <select
             onChange={handleChange}
-            placeholder="Vorname hier..."
-            className="olio-input"
-          />
-          {errors.firstName && (
-            <p className="olio-error">{errors.firstName}</p>
+            value={formValues.salutation} // Ensure this is tied to state
+            className="select input-bordered rounded-none w-full max-w-xs focus:bg-lime-50"
+            name="salutation"
+            title="Anrede"
+          >
+            <option value="" disabled>
+              Anrede
+            </option>
+            <option value="Herr">Herr</option>
+            <option value="Frau">Frau</option>
+            <option value="Divers">Divers</option>
+          </select>
+          {errors.salutation && (
+            <p className="olio-error">{errors.salutation}</p>
           )}
-          </div>
+        </div>
+          {/* First Name */}
+          <TextInput
+            label="Vorname *"
+            id="firstName"
+            value={formValues.firstName}
+            onChange={handleChange}
+            error={errors.firstName}
+            className="flex-grow ml-4"
+            placeholder=""
+          />
         </div>
         {/* Last Name */}
-        <div className="mb-4">
-          <label htmlFor="lastName" className="olio-label">
-            Nachname *
-          </label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            value={lastName}
-            onChange={handleChange}
-            className="olio-input w-full"
-          />
-          {errors.lastName && (
-            <p className="olio-error">{errors.lastName}</p>
-          )}
-        </div>
-
+        <TextInput
+          label="Name *"
+          id="lastName"
+          value={formValues.lastName}
+          onChange={handleChange}
+          error={errors.lastName}
+        />
         {/* Email */}
-        <div className="mb-4">
-          <label htmlFor="email" className="olio-labe">
-            Email *
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={handleChange}
-            className="olio-input"
-          />
-          {errors.email && (
-            <p className="olio-error">{errors.email}</p>
-          )}
-        </div>
-
+        <TextInput
+          label="Email *"
+          id="email"
+          type="email"
+          value={formValues.email}
+          onChange={handleChange}
+          error={errors.email}
+        />
         {/* Phone */}
-        <div className="mb-8">
-          <label htmlFor="phone" className="olio-label">
-            Telefon
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            value={phone}
-            onChange={handleChange}
-            className="olio-input"
-          />
-          {errors.phone && (
-            <p className="olio-error">{errors.phone}</p>
-          )}
-        </div>
-        <h3 className="text-xl uppercase text-center mb-6">Adresse & Versand</h3>
+        <TextInput
+          label="Telefon"
+          id="phone"
+          type="tel"
+          value={formValues.phone}
+          onChange={handleChange}
+        />
+        <h3 className="text-xl uppercase text-center mt-4 mb-6">Adresse & Versand</h3>
         {/* Delivery or Pickup */}
         <div className="mb-4">
           <label className="olio-label">Versand oder Pickup</label>
           <select
             name="deliveryOption"
             title="delivery or pickup"
-            value={deliveryOption}
+            value={formValues.deliveryOption}
             onChange={handleChange}
             className="select select-bordered w-full mt-2"
           >
-            <option value="delivery">Versand</option>
             <option value="pickup">Pickup</option>
+            <option value="delivery">Versand</option>
           </select>
         </div>
-        {/* Street */}
-        <div className="mb-4">
-          <label htmlFor="street" className="olio-label">
-            Straße
-          </label>
-          <input
-            type="text"
+        {formValues.deliveryOption === "delivery" && (
+        <>
+          {/* Street */}
+          <TextInput
+            label="Straße *"
             id="street"
-            name="street"
-            value={street}
+            value={formValues.street}
             onChange={handleChange}
-            className="olio-input"
+            error={errors.street}
           />
-          {errors.street && (
-            <p className="olio-error">{errors.street}</p>
-          )}
-        </div>
-        <div className="mb-4 row flex">
-            {/* Postcode */}
-          <div className="w-2/5">
-            <label htmlFor="postcode" className="olio-label">
-              Postleitzahl
-            </label>
-            <input
-              type="text"
-              id="postcode"
-              name="postcode"
-              value={postcode}
-              onChange={handleChange}
-              className="olio-input"
-              />
-            {errors.postcode && (
-              <p className="olio-error">{errors.postcode}</p>
-            )}
-          </div>
+          <div className="mb-4 row flex">
+          {/* Postcode */}
+          <TextInput
+            label="Postleitzahl *"
+            id="postcode"
+            value={formValues.postcode}
+            onChange={handleChange}
+            error={errors.postcode}
+            className="w-2/5"
+          />
           {/* City */}
-          <div className="flex-grow ml-4">
-            <label htmlFor="city" className="olio-label">
-              Stadt
-            </label>
-            <input
-              type="text"
-              id="city"
-              name="city"
-              value={city}
-              onChange={handleChange}
-              className="olio-input"
-            />
-            {errors.city && (
-              <p className="olio-error">{errors.city}</p>
-            )}
-          </div>
-        </div>
-        {/* Country */}
-        <div className="mb-4">
-          <label htmlFor="country" className="olio-label">
-            Land
-          </label>
-          <input
-            type="text"
-            id="country"
-            name="country"
-            value={country}
+          <TextInput
+            label="Stadt *"
+            id="city"
+            value={formValues.city}
             onChange={handleChange}
-            className="olio-input"
+            error={errors.city}
+            className="flex-grow ml-4"
           />
-          {errors.country && (
-            <p className="olio-error">{errors.country}</p>
-          )}
-        </div>
+          </div>
+        {/* Country */}
+        <TextInput
+          label="Land *"
+          id="country"
+          value={formValues.country}
+          onChange={handleChange}
+          error={errors.country}
+        />
         {/* isCompany */}
         <div className="mb-2 flex">
           <div className="form-control">
@@ -324,28 +319,26 @@ const handleSubmit = async (e: React.FormEvent) => {
         </div>
         {/* Company Name */}
         {isCompany && (
-          <div className="mb-4">
-            <label htmlFor="country" className="olio-label">
-              Firmen Name
-            </label>
-            <input
-              type="text"
-              id="companyName"
-              name="companyName"
-              value={companyName}
-              onChange={handleChange}
-              className="olio-input"
-            />
-            {errors.country && (
-              <p className="olio-error">{errors.country}</p>
-            )}
-          </div>
+          <TextInput
+            label="Firmen Name *"
+            id="companyName"
+            value={formValues.companyName}
+            onChange={handleChange}
+            error={errors.companyName}
+          />
         )}
         {/* Delivery Address */}
         <div className="mb-4 flex">
           <div className="form-control">
             <label className="label cursor-pointer">
-              <input type="checkbox" onChange={handleCheckboxChange} title="isDifferentDelivery" id="isDifferentDelivery" name="isDifferentDelivery" checked={isDifferentDelivery} className="" />
+              <input 
+                type="checkbox" 
+                onChange={handleCheckboxChange} 
+                title="isDifferentDelivery" 
+                id="isDifferentDelivery" 
+                name="isDifferentDelivery" 
+                checked={isDifferentDelivery}
+              />
               <span className="label-text ml-4 uppercase">Abweichende Lieferadresse</span>
             </label>
           </div>
@@ -355,128 +348,93 @@ const handleSubmit = async (e: React.FormEvent) => {
         <h3 className="text-xl uppercase text-center mb-6">Liefer Adresse</h3>
         <div className="row flex mb-4">
           <div className="w-2/5">
-            <label htmlFor="anrede" className="olio-label">
+            <label htmlFor="deliverySalutation" className="olio-label">
               Anrede *
             </label>
-            <select className="select input-bordered rounded-none w-full max-w-xs" title="deliveryAnrede">
-              <option disabled selected>Anrede</option>
-              <option>Herr</option>
-              <option>Frau</option>
-              <option>Divers</option>
+            <select
+              onChange={handleChange}
+              value={formValues.deliverySalutation} 
+              title="deliverySalutation"
+              name="deliverySalutation"
+              className="select input-bordered rounded-none w-full max-w-xs focus:bg-lime-50"            
+            >
+              <option value="" disabled>Anrede</option>
+              <option value="Herr">Herr</option>
+              <option value="Frau">Frau</option>
+              <option value="Divers">Divers</option>
             </select>
+          {errors.deliverySalutation && (
+            <p className="olio-error">{errors.deliverySalutation}</p>
+          )}
           </div>
           {/* First Name */}
-          <div className="flex-grow ml-4">
-          <label htmlFor="deliveryLastName" className="olio-label">
-            Vorname *
-          </label>
-          <input
-            type="text"
+          <TextInput
+            label="Vorname *"
             id="deliveryFirstName"
-            name="deliveryFirstName"
-            value={firstName}
+            value={formValues.deliveryFirstName}
             onChange={handleChange}
-            placeholder="Vorname hier..."
-            className="olio-input"
+            error={errors.deliveryFirstName}
+            className="flex-grow ml-4"
           />
-          {errors.firstName && (
-            <p className="olio-error">{errors.firstName}</p>
-          )}
-          </div>
         </div>
         {/* Last Name */}
-        <div className="mb-4">
-          <label htmlFor="deliveryLastName" className="olio-label">
-            Nachname *
-          </label>
-          <input
-            type="text"
+          <TextInput
+            label="Name *"
             id="deliveryLastName"
-            name="deliveryLastName"
-            value={lastName}
+            value={formValues.deliveryLastName}
             onChange={handleChange}
-            className="olio-input w-full"
+            error={errors.deliveryLastName}
           />
-          {errors.lastName && (
-            <p className="olio-error">{errors.lastName}</p>
-          )}
-        </div>
             {/* Delivery Street */}
-            <div className="mb-4">
-              <label htmlFor="street" className="olio-label">
-                Straße
-              </label>
-              <input
-                type="text"
-                id="deliveryStreet"
-                name="deliveryStreet"
-                title="Delivery Street"
-                value={street}
-                onChange={handleChange}
-                className="olio-input"
-              />
-              {errors.street && (
-                <p className="olio-error">{errors.street}</p>
-              )}
-            </div>
+          <TextInput
+            label="Straße *"
+            id="deliveryStreet"
+            value={formValues.deliveryStreet}
+            onChange={handleChange}
+            error={errors.deliveryStreet}
+          />
             <div className="mb-4 row flex">
-                {/* Delivery Postcode */}
-              <div className="w-2/5">
-                <label htmlFor="postcode" className="olio-label">
-                  Postleitzahl
-                </label>
-                <input
-                  type="text"
-                  id="deliveryPostcode"
-                  name="deliveryPostcode"
-                  title="Delivery Postcode"
-                  value={postcode}
-                  onChange={handleChange}
-                  className="olio-input"
-                  />
-                {errors.postcode && (
-                  <p className="olio-error">{errors.postcode}</p>
-                )}
-              </div>
+              {/* Delivery Postcode */}
+              <TextInput
+                label="Postleitzahl *"
+                id="deliveryPostcode"
+                value={formValues.deliveryPostcode}
+                onChange={handleChange}
+                error={errors.deliveryPostcode}
+                className="w-2/5"
+              />
               {/* Delivery City */}
-              <div className="flex-grow ml-4">
-                <label htmlFor="city" className="olio-label">
-                  Stadt
-                </label>
-                <input
-                  type="text"
-                  id="deliveryCity"
-                  name="deliveryCity"
-                  title="Delivery City"
-                  value={city}
-                  onChange={handleChange}
-                  className="olio-input"
-                />
-                {errors.city && (
-                  <p className="olio-error">{errors.city}</p>
-                )}
-              </div>
+              <TextInput
+                label="Stadt *"
+                id="deliveryCity"
+                value={formValues.deliveryCity}
+                onChange={handleChange}
+                error={errors.deliveryCity}
+                className="flex-grow ml-4"
+              />
             </div>
             {/* Delivery Country */}
-            <div className="mb-4">
-              <label htmlFor="country" className="olio-label">
-                Land
-              </label>
-              <input
-                type="text"
-                id="deliveryCountry"
-                name="deliveryCountry"
-                title="Delivery Country"
-                value={country}
-                onChange={handleChange}
-                className="olio-input"
-              />
-              {errors.country && (
-                <p className="olio-error">{errors.country}</p>
-              )}
-            </div>
+            <TextInput
+              label="Land *"
+              id="deliveryCountry"
+              value={formValues.deliveryCountry}
+              onChange={handleChange}
+              error={errors.deliveryCountry}
+            />
           </>
         )}
+        </>
+        )}
+        <div className="mb-4">
+          <label htmlFor="comment" className="olio-label">Kommentar</label>
+          <textarea
+            name="comment"  // Name to associate it with formValues
+            placeholder={formValues.deliveryOption === 'pickup' ? `z.B.: Hallo {Wuwu, Kai, Jockey},\nwann kann ich mein Öl abholen?\n\nGruß ${formValues.firstName}` : ""}
+            value={formValues.comment}  // Bind value to form state
+            onChange={handleChange}  // Handle changes
+            className="textarea textarea-bordered textarea-md w-full h-40 rounded-none focus:bg-lime-50"
+          ></textarea>
+        </div>
         {/* Submit Button */}
         <button type="submit" className="btn bg-slate-900 text-white_smoke-800 w-full rounded-none mt-6">
           Absenden

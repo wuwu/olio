@@ -7,7 +7,7 @@
 
 @layer components {
   .olio-input {
-    @apply input input-bordered w-full rounded-none border-zinc-700 p-2;
+    @apply input input-bordered w-full rounded-none border-zinc-700 p-2 focus:bg-lime-50;
   }
   .olio-label {
     @apply block text-xs font-semibold uppercase pb-1 text-zinc-500;
