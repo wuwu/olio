@@ -1,32 +1,14 @@
-// components/AddToCart.tsx
-import React, { useState, useEffect } from "react";
-import { fetchProducts, Product } from "../services/productsService";
+import React, { useState } from "react";
+import type { Product } from "../utils/productsService";
 import { addToBasket } from "../stores/basket";
 
-const AddToCart: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedPid, setSelectedPid] = useState<string>("");
+const AddToCart: React.FC<{ products: Product[] }> = ({ products }) => {
+  const [selectedPid, setSelectedPid] = useState<string>(products[0]?.pid || "");
   const [quantity, setQuantity] = useState<number>(1);
-  const [price, setPrice] = useState<number>(0);
-
-  // Fetch products on mount
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const productData = await fetchProducts();
-        setProducts(productData);
-        if (productData.length > 0) {
-          setSelectedPid(productData[0].pid);
-          setPrice(productData[0].pricePerLiter * productData[0].size);
-        }
-      } catch (error) {
-        console.error("Error loading products:", error);
-      }
-    };
-
-    loadProducts();
-  }, []);
-
+  const [price, setPrice] = useState<number>(
+    products[0] ? products[0].pricePerLiter * products[0].size : 0
+  );
+  console.log(products)
   const handlePidChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const pid = e.target.value;
     const product = products.find((p) => p.pid === pid);

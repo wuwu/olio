@@ -6,6 +6,9 @@ import ResponsiveImage from "../components/ResponsiveImage.astro";
 import RemainingStock from "../components/RemainingStock.astro";
 import AddToCart from "../components/AddToCart";
 import Basket from "../components/Basket";
+import { fetchProducts } from "../utils/productsService";
+
+const products = await fetchProducts();
 ---
 
 <Layout title="Olio Extra Vergine !!!">
@@ -45,7 +48,7 @@ import Basket from "../components/Basket";
 				</p>
 			</div>
 		</div>
-		<AddToCart client:only="react" />
+		<AddToCart products={products} client:only="react" />
 		<h2 class="text-4xl pb-8 font-bodoni italic">Impressionen</h2>
 		<ImageSlider client:only="react" />
 	</div>
