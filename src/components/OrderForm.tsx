@@ -412,7 +412,7 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         <button 
           type="submit" 
           disabled={isSubmitting}
-          className="btn bg-slate-900 text-white_smoke-800 w-full rounded-none mt-6">
+          className="btn bg-slate-900 text-white_smoke-800 w-full font-semibold rounded-none mt-6 hover:text-primary hover:bg-slate-800">
           {isSubmitting ? "Nachricht wird gesendet..." : "Absenden"}
         </button>
       </form>

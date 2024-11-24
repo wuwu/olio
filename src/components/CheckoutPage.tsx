@@ -20,7 +20,7 @@ const CheckoutPage: React.FC = () => {
         formValues.firstName,
         formValues.lastName,
         formValues.companyName ?? "",
-        formValues.quantity,
+        Number(formValues.quantity),
         formValues.pid,
         formValues.email,
         formValues.phone ?? "",
