@@ -4,53 +4,53 @@ import ImageSlider from "../components/ImageSlider.tsx";
 import NavigationBar from "../components/NavigationBar";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
 import RemainingStock from "../components/RemainingStock.astro";
+import AddToCart from "../components/AddToCart";
+import Basket from "../components/Basket";
+import { fetchProducts } from "../utils/productsService";
+
+const products = await fetchProducts();
 ---
 
 <Layout title="Olio Extra Vergine !!!">
 	<NavigationBar client:only="react" />
+	<Basket client:only="react" />
+	<RemainingStock />
 	<div class="container max-w-screen mx-auto px-4">
-		<ResponsiveImage
-			src="/EddaIllu.jpg"
-			alt="A beautiful olive oil logo"
-			sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-			srcSet={[{ src: "/EddaIllu@2.jpg", width: 640 }]}
-			class="p-8 col-span-2 justify-center"
-		/>
-		<RemainingStock />
-
-		<div id="information" class="intro p-8">
-			<h2 class="text-4xl pb-8 font-bodoni italic">
-				Erleben Sie die Essenz der Exzellenz
-			</h2>
-			<p class="pb-4 font-semibold">
-				Willkommen in der Heimat außergewöhnlichen Olivenöls, das mit Tradition
-				und Sorgfalt hergestellt wird. Unsere Olivenhaine, mit Bäumen im Alter
-				von 60 bis 100 Jahren, liefern eine einzigartige Mischung aus drei
-				erlesenen Olivensorten: Casa Liva, Toscani und der seltenen Minio.
-			</p>
-			<p class="pb-4">
-				Jede Olive wird von Hand geerntet, um höchste Qualität und ein
-				harmonisches Gleichgewicht der Aromen in jedem Tropfen zu gewährleisten.
-				Die Minio-Olive, bekannt für ihre kleine Größe und Seltenheit, verleiht
-				unserem Öl eine unverwechselbare Tiefe, die es von anderen abhebt. Mit
-				unserem Engagement für den Erhalt dieser seltenen Sorte bewahren wir ein
-				Erbe, das nur noch wenige Landwirte fortführen.
-			</p>
-			<p class="pb-4">
-				Unser Olivenöl ist eine wahre Rarität: Nur etwa 100 Flaschen stehen
-				jedes Jahr zum Verkauf.
-			</p>
-			<p class="pb-8">
-				Genießen Sie das beste Olivenöl, in dem Tradition und außergewöhnlicher
-				Geschmack verschmelzen.
-			</p>
-			<button class="btn
-			btn-wide
-			bg-lime-600
-			col-span-2 mb-8"> Bestellen </button>
-			<h2 class="text-4xl pb-8 font-bodoni italic">Impressionen</h2>
-			<ImageSlider client:only="react" />
+		<div class="grid md:grid-cols-2 gap-4 bg-white">
+			<ResponsiveImage
+				src="/produkt_platzhalter.webp"
+				alt="A beautiful olive oil logo"
+				sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+				srcSet={[{ src: "/produkt_platzhalter.webp", width: 640 }]}
+				class="p-8 col-span-2 justify-self-center"
+			/>
+			<div id="information" class="intro p-8">
+				<h2 class="text-4xl pb-8 font-bodoni italic">
+					Jetzt gibts richtig gutes Öl
+				</h2>
+				<p class="pb-4 font-semibold">
+					Unser Olivenhain, mit Bäumen im Alter von 60 bis 100 Jahren, liefert
+					eine einzigartige Mischung aus drei erlesenen Olivensorten: Casa Liva,
+					Toscani und der seltenen Minio.
+				</p>
+				<p class="pb-4">
+					Jede Olive wird von Hand geerntet, um höchste Qualität und ein
+					harmonisches Gleichgewicht der Aromen in jedem Tropfen zu
+					gewährleisten. Die Minio-Olive, bekannt für ihre kleine Größe und
+					Seltenheit, verleiht unserem Öl eine unverwechselbare Tiefe, die es
+					von anderen abhebt. Mit unserem Engagement für den Erhalt dieser
+					seltenen Sorte bewahren wir ein Erbe, das nur noch wenige Landwirte
+					fortführen.
+				</p>
+				<p class="pb-4">
+					Unser Olivenöl ist eine wahre Rarität: Nur etwa 100 Flaschen stehen
+					jedes Jahr zum Verkauf.
+				</p>
+			</div>
 		</div>
+		<AddToCart products={products} client:only="react" />
+		<h2 class="text-4xl pb-8 font-bodoni italic">Impressionen</h2>
+		<ImageSlider client:only="react" />
 	</div>
 </Layout>
 

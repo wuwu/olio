@@ -9,6 +9,7 @@ interface TextInputProps {
   placeholder?: string;
   type?: string; // Allow different input types like "text", "email", "password", etc.
   className?: string; // Optional className for custom styles
+  required?: boolean;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -20,11 +21,13 @@ const TextInput: React.FC<TextInputProps> = ({
   placeholder = '',
   type = 'text',
   className = '',
+  required
 }) => {
+  const fieldlabel = required ? `${label}*` : label;
   return (
     <div className={`mb-4 ${className}`}>
       <label htmlFor={id} className="olio-label">
-        {label}
+        {fieldlabel}
       </label>
       <input
         type={type}

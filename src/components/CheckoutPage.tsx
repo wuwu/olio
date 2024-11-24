@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import OrderForm from "./OrderForm";
+import { fieldLabels } from "./form/fieldLabels";
 
 const CheckoutPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submittedData, setSubmittedData] = useState<any | null>(null);
+  const [rawFormData, setRawFormData] = useState<any | null>('');
 
   const handleFormSubmit = async (formValues: any) => {
+    setRawFormData(formValues);
     setIsSubmitting(true);
     setErrorMessage(null);
     setSuccessMessage(null);
@@ -17,7 +20,7 @@ const CheckoutPage: React.FC = () => {
         formValues.firstName,
         formValues.lastName,
         formValues.companyName ?? "",
-        formValues.quantity,
+        Number(formValues.quantity),
         formValues.pid,
         formValues.email,
         formValues.phone ?? "",
@@ -58,19 +61,33 @@ const CheckoutPage: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+  const excludedFields = ["status", "paid", "pid"]; // Fields to always exclude
+
+  const processedData = Object.entries(rawFormData)
+    .filter(([, value]) => value)
+    .filter(([key, value]) => !excludedFields.includes(key) && value) // Exclude specified fields and empty values
+    .map(([key, value]) => ({
+      label: fieldLabels[key] || key, // Use fieldLabels for labels
+      value,
+    }));
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
       {!successMessage ? (
         <OrderForm onSubmit={handleFormSubmit} isSubmitting={isSubmitting} />
       ) : (
-        <div className="text-center">
+        <div>
           <h3 className="text-2xl text-green-500 mb-4">{successMessage}</h3>
-          <p>Thank you for your order! Here is a summary of your submission:</p>
-          <pre className="bg-gray-100 p-4 rounded mt-4 text-left">
-            {JSON.stringify(submittedData, null, 2)}
-          </pre>
-          <p className="mt-6">Further instructions will be sent to your email.</p>
+          <p className="text-xl pb-4">Danke für deine Bestellung!</p> 
+          <p className="pb-4">Hier die Zusammenfassung deiner Bestellung:</p>
+          <div className="text-lg mb-8">
+            {processedData.map(({ label, value }) => (
+              <div key={label} className="flex gap-4 ">
+                <strong>{label}:</strong> <span>{value}</span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6">Weitere Informationen schicken wir dir per Email.</p>
         </div>
       )}
       {errorMessage && (
