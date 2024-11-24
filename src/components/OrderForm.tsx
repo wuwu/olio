@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from "react";
 import TextInput from './form/TextInput';
+import { fieldLabels } from "./form/fieldLabels";
+
 interface OrderFormProps {
   onSubmit: (formData: any) => void;
   isSubmitting: boolean;
@@ -146,64 +148,7 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       }
     onSubmit(formValues);
   };
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   console.log(formValues)
-  //   const isValid = validateForm();
-  //   if (!isValid) {
-  //       alert("Please correct the errors before submitting.");
-  //       return;
-  //     }
-
-  //   const formData = [
-  //     [
-  //       formValues.formattedDate,
-  //       formValues.salutation,
-  //       formValues.firstName,
-  //       formValues.lastName,
-  //       formValues.companyName ?? "",
-  //       formValues.quantity,
-  //       formValues.pid,
-  //       formValues.email,
-  //       formValues.phone ?? "",
-  //       formValues.status,
-  //       formValues.paid ?? "",
-  //       formValues.street ?? "",
-  //       formValues.postcode ?? "",
-  //       formValues.city ?? "",
-  //       formValues.country ?? "",
-  //       formValues.deliveryOption ?? "",
-  //       formValues.deliverySalutation ?? "",
-  //       formValues.deliveryFirstName ?? "",
-  //       formValues.deliveryLastName ?? "",
-  //       formValues.deliveryStreet ?? "",
-  //       formValues.deliveryPostcode ?? "",
-  //       formValues.deliveryCity ?? "",
-  //       formValues.deliveryCountry ?? "",
-  //       formValues.comment ?? "",
-  //     ],
-  //   ];
-  //   setIsSubmitting(true);
-  //   try {
-  //     const response = await fetch("/.netlify/functions/updateGoogleSheets", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ data: formData }),
-  //     });
-
-  //     const result = await response.json();
-  //     console.log("Serverless Function Response:", result);
-  //     setFormSubmitted(true);
-  //     setSuccessMessage("Your order has been submitted successfully!");
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //     alert("Failed to update Google Sheets.");
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
-
+ 
   return (
     <div className="flex justify-center items-center min-h-screen ">
       <form onSubmit={handleSubmit}
@@ -221,7 +166,7 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             value={formValues.salutation} // Ensure this is tied to state
             className="select input-bordered rounded-none w-full max-w-xs focus:bg-lime-50"
             name="salutation"
-            title="Anrede"
+            title={fieldLabels.salutation}
           >
             <option value="" disabled>
               Anrede
@@ -236,35 +181,38 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         </div>
           {/* First Name */}
           <TextInput
-            label="Vorname *"
+            label={fieldLabels.firstName}
             id="firstName"
             value={formValues.firstName}
             onChange={handleChange}
             error={errors.firstName}
             className="flex-grow ml-4"
             placeholder=""
+            required
           />
         </div>
         {/* Last Name */}
         <TextInput
-          label="Name *"
+          label={fieldLabels.lastName}
           id="lastName"
           value={formValues.lastName}
           onChange={handleChange}
           error={errors.lastName}
+          required
         />
         {/* Email */}
         <TextInput
-          label="Email *"
+          label={fieldLabels.email}
           id="email"
           type="email"
           value={formValues.email}
           onChange={handleChange}
           error={errors.email}
+          required
         />
         {/* Phone */}
         <TextInput
-          label="Telefon"
+          label={fieldLabels.phone}
           id="phone"
           type="tel"
           value={formValues.phone}
@@ -289,39 +237,43 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         <>
           {/* Street */}
           <TextInput
-            label="Straße *"
+            label={fieldLabels.street}
             id="street"
             value={formValues.street}
             onChange={handleChange}
             error={errors.street}
+            required
           />
           <div className="mb-4 row flex">
           {/* Postcode */}
           <TextInput
-            label="Postleitzahl *"
+            label={fieldLabels.postcode}
             id="postcode"
             value={formValues.postcode}
             onChange={handleChange}
             error={errors.postcode}
             className="w-2/5"
+            required
           />
           {/* City */}
           <TextInput
-            label="Stadt *"
+            label={fieldLabels.city}
             id="city"
             value={formValues.city}
             onChange={handleChange}
             error={errors.city}
             className="flex-grow ml-4"
+            required
           />
           </div>
         {/* Country */}
         <TextInput
-          label="Land *"
+          label={fieldLabels.country}
           id="country"
           value={formValues.country}
           onChange={handleChange}
           error={errors.country}
+          required
         />
         {/* isCompany */}
         <div className="mb-2 flex">
@@ -335,7 +287,7 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         {/* Company Name */}
         {isCompany && (
           <TextInput
-            label="Firmen Name *"
+            label={fieldLabels.companyName}
             id="companyName"
             value={formValues.companyName}
             onChange={handleChange}
@@ -364,7 +316,7 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         <div className="row flex mb-4">
           <div className="w-2/5">
             <label htmlFor="deliverySalutation" className="olio-label">
-              Anrede *
+              {`${fieldLabels.salutation}*`}
             </label>
             <select
               onChange={handleChange}
@@ -384,57 +336,63 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           </div>
           {/* First Name */}
           <TextInput
-            label="Vorname *"
+            label={fieldLabels.firstName}
             id="deliveryFirstName"
             value={formValues.deliveryFirstName}
             onChange={handleChange}
             error={errors.deliveryFirstName}
             className="flex-grow ml-4"
+            required
           />
         </div>
         {/* Last Name */}
           <TextInput
-            label="Name *"
+            label={fieldLabels.lastName}
             id="deliveryLastName"
             value={formValues.deliveryLastName}
             onChange={handleChange}
             error={errors.deliveryLastName}
+            required
           />
             {/* Delivery Street */}
           <TextInput
-            label="Straße *"
+            label={fieldLabels.street}
             id="deliveryStreet"
             value={formValues.deliveryStreet}
             onChange={handleChange}
             error={errors.deliveryStreet}
+            required
           />
             <div className="mb-4 row flex">
               {/* Delivery Postcode */}
               <TextInput
-                label="Postleitzahl *"
+                label={fieldLabels.postcode}
                 id="deliveryPostcode"
                 value={formValues.deliveryPostcode}
                 onChange={handleChange}
                 error={errors.deliveryPostcode}
                 className="w-2/5"
+                required
               />
               {/* Delivery City */}
               <TextInput
-                label="Stadt *"
+                label={fieldLabels.city}
                 id="deliveryCity"
                 value={formValues.deliveryCity}
                 onChange={handleChange}
                 error={errors.deliveryCity}
                 className="flex-grow ml-4"
+                required
               />
             </div>
             {/* Delivery Country */}
             <TextInput
-              label="Land *"
+              label={fieldLabels.country}
               id="deliveryCountry"
               value={formValues.deliveryCountry}
               onChange={handleChange}
               error={errors.deliveryCountry}
+              required
             />
           </>
         )}
