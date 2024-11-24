@@ -1,14 +1,18 @@
 import React, { useState, useCallback } from "react";
 import TextInput from './form/TextInput';
+interface OrderFormProps {
+  onSubmit: (formData: any) => void;
+  isSubmitting: boolean;
+}
 
-const OrderForm = () => {
+const OrderForm: React.FC<OrderFormProps> =  ({ onSubmit, isSubmitting}) => {
   const [formValues, setFormValues] = useState({
     formattedDate: new Date(Date.now()).toLocaleDateString('de-DE'),
     salutation: '',
     firstName: '',
     lastName: '',
     companyName: '',
-    quantity: '',
+    quantity: '1', // TODO - get quantity from product selection
     pid: 'o_2024_0500',
     email: '',
     phone: '',
@@ -32,6 +36,7 @@ const OrderForm = () => {
   
   // form settings
   const [isCompany, setIsCompany] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isDifferentDelivery, setIsDifferentDelivery] = useState(false);
   
   // State for error handling
@@ -77,7 +82,6 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       firstName: "Vorname fehlt",
       lastName: "Nachname fehlt",
       email: "E-Mail-Adresse fehlt",
-      phone: "Telefonnummer fehlt",
       street: formValues.deliveryOption === "delivery" ? "Straße fehlt" : "",
       city: formValues.deliveryOption === "delivery" ? "Stadt fehlt" : "",
       postcode: formValues.deliveryOption === "delivery" ? "Postleitzahl fehlt" : "",
@@ -134,59 +138,70 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formValues)
     const isValid = validateForm();
     if (!isValid) {
-        alert("Please correct the errors before submitting.");
         return;
       }
-
-    const formData = [
-      [
-        formValues.formattedDate,
-        formValues.salutation,
-        formValues.firstName,
-        formValues.lastName,
-        formValues.companyName ?? "",
-        formValues.quantity,
-        formValues.pid,
-        formValues.email,
-        formValues.phone ?? "",
-        formValues.status,
-        formValues.paid ?? "",
-        formValues.street ?? "",
-        formValues.postcode ?? "",
-        formValues.city ?? "",
-        formValues.country ?? "",
-        formValues.deliveryOption ?? "",
-        formValues.deliverySalutation ?? "",
-        formValues.deliveryFirstName ?? "",
-        formValues.deliveryLastName ?? "",
-        formValues.deliveryStreet ?? "",
-        formValues.deliveryPostcode ?? "",
-        formValues.deliveryCity ?? "",
-        formValues.deliveryCountry ?? "",
-        formValues.comment ?? "",
-      ],
-    ];
-
-    try {
-      const response = await fetch("/.netlify/functions/updateGoogleSheets", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: formData }),
-      });
-
-      const result = await response.json();
-      console.log("Serverless Function Response:", result);
-      alert("Data successfully sent to Google Sheets!");
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Failed to update Google Sheets.");
-    }
+    onSubmit(formValues);
   };
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log(formValues)
+  //   const isValid = validateForm();
+  //   if (!isValid) {
+  //       alert("Please correct the errors before submitting.");
+  //       return;
+  //     }
+
+  //   const formData = [
+  //     [
+  //       formValues.formattedDate,
+  //       formValues.salutation,
+  //       formValues.firstName,
+  //       formValues.lastName,
+  //       formValues.companyName ?? "",
+  //       formValues.quantity,
+  //       formValues.pid,
+  //       formValues.email,
+  //       formValues.phone ?? "",
+  //       formValues.status,
+  //       formValues.paid ?? "",
+  //       formValues.street ?? "",
+  //       formValues.postcode ?? "",
+  //       formValues.city ?? "",
+  //       formValues.country ?? "",
+  //       formValues.deliveryOption ?? "",
+  //       formValues.deliverySalutation ?? "",
+  //       formValues.deliveryFirstName ?? "",
+  //       formValues.deliveryLastName ?? "",
+  //       formValues.deliveryStreet ?? "",
+  //       formValues.deliveryPostcode ?? "",
+  //       formValues.deliveryCity ?? "",
+  //       formValues.deliveryCountry ?? "",
+  //       formValues.comment ?? "",
+  //     ],
+  //   ];
+  //   setIsSubmitting(true);
+  //   try {
+  //     const response = await fetch("/.netlify/functions/updateGoogleSheets", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ data: formData }),
+  //     });
+
+  //     const result = await response.json();
+  //     console.log("Serverless Function Response:", result);
+  //     setFormSubmitted(true);
+  //     setSuccessMessage("Your order has been submitted successfully!");
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //     alert("Failed to update Google Sheets.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
 
   return (
@@ -436,8 +451,11 @@ const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           ></textarea>
         </div>
         {/* Submit Button */}
-        <button type="submit" className="btn bg-slate-900 text-white_smoke-800 w-full rounded-none mt-6">
-          Absenden
+        <button 
+          type="submit" 
+          disabled={isSubmitting}
+          className="btn bg-slate-900 text-white_smoke-800 w-full rounded-none mt-6">
+          {isSubmitting ? "Nachricht wird gesendet..." : "Absenden"}
         </button>
       </form>
     </div>
