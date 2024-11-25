@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import OrderForm from "./OrderForm";
 import { fieldLabels } from "./form/fieldLabels";
+import { useStore } from "@nanostores/react";
+import { basketStore, type BasketItem } from "../stores/basket";
 
 const CheckoutPage: React.FC = () => {
+  const basketItems = useStore(basketStore);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -20,8 +23,8 @@ const CheckoutPage: React.FC = () => {
         formValues.firstName,
         formValues.lastName,
         formValues.companyName ?? "",
-        Number(formValues.quantity),
-        formValues.pid,
+        Number(basketItems[0].quantity),
+        basketItems[0].pid,
         formValues.email,
         formValues.phone ?? "",
         formValues.status,

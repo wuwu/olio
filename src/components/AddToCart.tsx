@@ -54,7 +54,7 @@ const AddToCart: React.FC<{ products: Product[] }> = ({ products }) => {
         >
           {products.map((product) => (
             <option key={product.pid} value={product.pid}>
-              {product.size}L
+              {product.size} L
             </option>
           ))}
         </select>

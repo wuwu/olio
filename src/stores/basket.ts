@@ -1,5 +1,6 @@
 // src/stores/basket.ts
 import { atom } from 'nanostores';
+import { persistentAtom } from '@nanostores/persistent'
 
 export type BasketItem = {
   pid: string; // Unique product ID
@@ -9,8 +10,15 @@ export type BasketItem = {
 };
 
 // Base store to hold raw items
-export const basketStore = atom<BasketItem[]>([]);
-
+// export const basketStore = persistentAtom<string, BasketItem[]>(basketStore,[]);
+export const basketStore = persistentAtom<BasketItem[]>(
+  'basket', // Key used in localStorage
+  [], // Default value
+  {
+    encode: JSON.stringify, // Serialize to store in localStorage
+    decode: JSON.parse,     // Deserialize when reading from localStorage
+  }
+);
 // Function to add an item to the basket, grouping items by pid
 export function addToBasket(newItem: BasketItem) {
   const currentItems = basketStore.get();

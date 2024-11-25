@@ -14,7 +14,6 @@ const products = await fetchProducts();
 
 <Layout title="Olio Extra Vergine !!!">
 	<NavigationBar client:only="react" />
-	<Basket client:only="react" />
 	<RemainingStock />
 	<div class="container max-w-screen mx-auto px-4">
 		<div class="grid md:grid-cols-2 gap-4 bg-white">
@@ -49,7 +48,11 @@ const products = await fetchProducts();
 				</p>
 			</div>
 		</div>
-		<AddToCart products={products} client:only="react" />
+		<div class="grid md:grid-cols-2 gap-4">
+			<AddToCart products={products} client:only="react" />
+			<Basket client:only="react" />
+		</div>
+
 		<h2 class="text-4xl pb-8 font-bodoni italic">Impressionen</h2>
 		<ImageSlider client:only="react" />
 	</div>
