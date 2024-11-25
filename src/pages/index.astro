@@ -6,9 +6,33 @@ import ResponsiveImage from "../components/ResponsiveImage.astro";
 import RemainingStock from "../components/RemainingStock.astro";
 import AddToCart from "../components/AddToCart";
 import Basket from "../components/Basket";
-import { fetchProducts } from "../utils/productsService";
+// import { fetchProducts } from "../utils/productsService";
 
-const products = await fetchProducts();
+// const products = await fetchProducts();
+// console.log(products);
+
+const products = [
+	{
+		pid: "2024_00250",
+		size: 0.25,
+		pricePerLiter: 60,
+	},
+	{
+		pid: "2024_00500",
+		size: 0.5,
+		pricePerLiter: 50,
+	},
+	{
+		pid: "2024_00750",
+		size: 0.75,
+		pricePerLiter: 40,
+	},
+	{
+		pid: "2024_01000",
+		size: 1,
+		pricePerLiter: 35,
+	},
+];
 ---
 
 <Layout title="Olio Extra Vergine !!!">
