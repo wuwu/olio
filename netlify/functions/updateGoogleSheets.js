@@ -28,7 +28,7 @@ export async function handler (event) {
     const range = "orders!A2:R"; // Adjust range as needed
 
     // Update Google Sheets with provided data
-    const response = await sheets.spreadsheets.values.append({
+    const response = sheets.spreadsheets.values.append({
       spreadsheetId,
       range,
       valueInputOption: "RAW",
