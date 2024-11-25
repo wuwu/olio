@@ -1,4 +1,4 @@
-const { google } = require("googleapis");
+import { google } from "googleapis";
 
 export async function handler (event) {
   try {
@@ -24,11 +24,11 @@ export async function handler (event) {
     const sheets = google.sheets({ version: "v4", auth });
 
     // Define spreadsheet and range
-    const spreadsheetId = process.env.SPREADSHEET_ID; // Store in Netlify environment variables
-    const range = "orders!A2:R"; // Adjust range as needed
+    const spreadsheetId = process.env.SPREADSHEET_ID;
+    const range = "orders!A2:R";
 
     // Update Google Sheets with provided data
-    const response = sheets.spreadsheets.values.append({
+    const response = await sheets.spreadsheets.values.append({
       spreadsheetId,
       range,
       valueInputOption: "RAW",
@@ -46,4 +46,4 @@ export async function handler (event) {
       body: JSON.stringify({ error: "Failed to update Google Sheets", details: error.message }),
     };
   }
-};
+}
