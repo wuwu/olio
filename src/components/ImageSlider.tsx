@@ -12,7 +12,7 @@ type Image = {
 const ImageSlider = () => {
 
   const slide: Image = {
-    url: "./public/_MG_9471.jpg",
+    url: "/_MG_9471.jpg",
     index: 1,
     alt: "test",
     title: "title for img 1"
