@@ -32,7 +32,7 @@ const AddToCart: React.FC<{ products: Product[] }> = ({ products }) => {
     if (product) {
       addToBasket({
         pid: product.pid,
-        size: product.size,
+        size: String(product.size),
         quantity,
         price,
       });

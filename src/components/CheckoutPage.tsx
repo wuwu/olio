@@ -61,15 +61,20 @@ const CheckoutPage: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  const excludedFields = ["status", "paid", "pid"]; // Fields to always exclude
+  const excludedFields = ["status", "paid", "pid"]; 
+  type ProcessedDataItem = {
+    label: string;
+    value: string | number; 
+  };
 
-  const processedData = Object.entries(rawFormData)
-    .filter(([, value]) => value)
-    .filter(([key, value]) => !excludedFields.includes(key) && value) // Exclude specified fields and empty values
-    .map(([key, value]) => ({
-      label: fieldLabels[key] || key, // Use fieldLabels for labels
-      value,
-    }));
+
+const processedData: ProcessedDataItem[] = Object.entries(rawFormData)
+  .filter(([, value]) => value) 
+  .filter(([key, value]) => !excludedFields.includes(key) && value)
+  .map(([key, value]) => ({
+    label: fieldLabels[key] || key,
+    value: typeof value === 'string' || typeof value === 'number' ? value : String(value), 
+  }));
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
@@ -83,7 +88,7 @@ const CheckoutPage: React.FC = () => {
           <div className="text-lg mb-8">
             {processedData.map(({ label, value }) => (
               <div key={label} className="flex gap-4 ">
-                <strong>{label}:</strong> <span>{value}</span>
+                <strong>{label}:</strong> <span>{String(value)}</span>
               </div>
             ))}
           </div>
