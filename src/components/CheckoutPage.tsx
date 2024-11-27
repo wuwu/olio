@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import OrderForm from "./OrderForm";
 import { fieldLabels } from "./form/fieldLabels";
 import { useStore } from "@nanostores/react";
-import { basketStore, type BasketItem } from "../stores/basket";
+import { basketStore } from "../stores/basket";
 
 const CheckoutPage: React.FC = () => {
   const basketItems = useStore(basketStore);

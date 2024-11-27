@@ -1,5 +1,4 @@
 // src/stores/basket.ts
-import { atom } from 'nanostores';
 import { persistentAtom } from '@nanostores/persistent'
 
 export type BasketItem = {

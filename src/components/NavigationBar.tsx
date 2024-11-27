@@ -1,15 +1,14 @@
 import React from "react";
 
-
 const NavigationBar: React.FC= () => {
   return (
-    <div className="navbar bg-white_smoke-400 h-50 fixed top-0  border-b border-b-slate-500 z-50">
+    <div className="navbar bg-background h-24 fixed top-0 z-50">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
+              className="h-5 w-8"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor">
@@ -36,18 +35,18 @@ const NavigationBar: React.FC= () => {
         </div>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
+        <ul className="menu menu-horizontal px-1 text-xl font-semibold">
           <li><a href="/">Home</a></li>
           <li>
             <details>
-              <summary>Parent</summary>
+              <summary>Informationen</summary>
               <ul className="p-2">
-                <li><a>Submenu 1</a></li>
-                <li><a>Submenu 2</a></li>
+                <li><a>Unsere Oliven Sorten</a></li>
+                <li><a>Impressionen</a></li>
               </ul>
             </details>
           </li>
-          <li><a>Item 3</a></li>
+          <li><a>Kontakt</a></li>
         </ul>
       </div>
       <div className="navbar-end">
