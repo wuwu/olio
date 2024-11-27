@@ -7,6 +7,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        background: '#e1fa91',
         primary: {
           DEFAULT: '#a3e635', // lime-400 color
           dark: '#84cc16', // lime-500 for hover or darker shade
@@ -63,6 +64,7 @@ module.exports = {
       },
       fontFamily: {
         bodoni: ['"Bodoni Moda"', "serif"],
+        poppins: ["Poppins", "sans-serif"],
       },
     }
   },

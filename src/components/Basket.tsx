@@ -10,14 +10,15 @@ const Basket: React.FC = () => {
     const updatedItems = items.filter((_, i) => i !== index); // Remove the item by index
     basketStore.set(updatedItems); // Update the basket store
   };
-
+  
+  if (!items.length) return null;
 
   return (
-    <div className="p-4 bg-white shadow-lg rounded-md w-80">
+    <div className="p-8 bg-white  w-full mb-8">
       <h2 className="text-xl font-bold mb-4">Warenkorb</h2>
       <ul>
         {items.map((item, index) => (
-          <li key={index} className="mb-4 flex justify-between">
+          <li key={index} className="mb-2 p-2 border flex justify-between">
             <span>{item.quantity} x {item.size}L - {item.price.toFixed(2)} €</span>
             <button
               onClick={() => handleDelete(index)}
@@ -29,6 +30,13 @@ const Basket: React.FC = () => {
           </li>
         ))}
       </ul>
+      <button 
+        onClick={() => (window.location.href = '/checkout')}
+        type="button"
+        className="w-full bg-white_smoke-400 text-black py-2 rounded hover:bg-green-700 transition"
+      >
+        Bestellen
+      </button>
     </div>
   );
 };

@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import ImageSlider from "../components/ImageSlider.tsx";
 import NavigationBar from "../components/NavigationBar";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
 import RemainingStock from "../components/RemainingStock.astro";
@@ -14,48 +13,65 @@ const products = await fetchProducts();
 
 <Layout title="Olio Extra Vergine !!!">
 	<NavigationBar client:only="react" />
-	<RemainingStock />
-	<div class="container max-w-screen mx-auto px-4">
-		<div class="grid md:grid-cols-2 gap-4 bg-white">
-			<ResponsiveImage
-				src="/produkt_platzhalter.webp"
-				alt="A beautiful olive oil logo"
-				sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-				srcSet={[{ src: "/produkt_platzhalter.webp", width: 640 }]}
-				class="p-8 col-span-2 justify-self-center"
-			/>
-			<div id="information" class="intro p-8">
-				<h2 class="text-4xl pb-8 font-bodoni italic">
-					Jetzt gibts richtig gutes Öl
+	<div class="container max-w-full mx-auto px-4 md:px-8">
+		<RemainingStock />
+		<div id="information" class="intro bg-neutral-100 p-8 max-w-full mx-auto">
+			<div class="max-w-3xl mx-auto">
+				<h2 class="text-5xl md:text-8xl font-poppins font-semibold pb-8">
+					Richtig gutes Öl
 				</h2>
-				<p class="pb-4 font-semibold">
-					Unser Olivenhain, mit Bäumen im Alter von 60 bis 100 Jahren, liefert
-					eine einzigartige Mischung aus drei erlesenen Olivensorten: Casa Liva,
-					Toscani und der seltenen Minio.
-				</p>
-				<p class="pb-4">
-					Jede Olive wird von Hand geerntet, um höchste Qualität und ein
-					harmonisches Gleichgewicht der Aromen in jedem Tropfen zu
-					gewährleisten. Die Minio-Olive, bekannt für ihre kleine Größe und
-					Seltenheit, verleiht unserem Öl eine unverwechselbare Tiefe, die es
-					von anderen abhebt. Mit unserem Engagement für den Erhalt dieser
-					seltenen Sorte bewahren wir ein Erbe, das nur noch wenige Landwirte
-					fortführen.
-				</p>
-				<p class="pb-4">
-					Unser Olivenöl ist eine wahre Rarität: Nur etwa 100 Flaschen stehen
-					jedes Jahr zum Verkauf.
+				<p class="pb-4 text-3xl md:text-4xl font-extralight leading-snug">
+					Mit dem Kauf unseres Olivenöls unterstützt du direkt die Pflege
+					unseres Olivenhains und hilfst uns, unsere traditionellen und
+					nachhaltigen Anbaumethoden zu bewahren. Deine Unterstützung ermöglicht
+					uns: Die nötige Ausrüstung wie Netze und schonende Erntehilfen zu
+					finanzieren. In biologische Düngemittel und umweltfreundliche
+					Landwirtschaft zu investieren. Die hohe Qualität unseres
+					handgefertigten Olivenöls zu erhalten. Dieses Projekt liegt uns sehr
+					am Herzen. Mit jedem Tropfen unseres Olivenöls genießt du nicht nur
+					ein Stück mediterraner Tradition, sondern teilst auch unsere
+					Leidenschaft für Qualität und Nachhaltigkeit. Vielen Dank, dass du uns
+					auf diesem Weg begleitest und unsere Leidenschaft teilst!
 				</p>
 			</div>
 		</div>
-		<div class="grid md:grid-cols-2 gap-4">
-			<AddToCart products={products} client:only="react" />
-			<Basket client:only="react" />
+		<div
+			class="mx-auto h-4/5 max-w-full overflow-y-scroll bg-cover bg-fixed bg-center bg-no-repeat mb-8"
+			style="background-image:url('/_MG_9337.jpg');"
+		>
+			<div class="mt-[320px] max-w-3xl mx-auto">
+				<div class="bg-white p-4 sm:p-8">
+					<h2 class="text-6xl font-poppins font-semibold pb-8">
+						Unsere Flaschengrößen – Für jeden das Richtige
+					</h2>
+					<p class="pb-4 text-3xl font-extralight leading-snug">
+						Wer unser Olivenöl noch nicht kennt, kann mit unserer handlichen
+						0,5-Liter-Flasche einen ersten Eindruck gewinnen und den feinen
+						Geschmack erleben. Für alle, die unser Öl bereits kennen und
+						schätzen, gibt es die bewährte 1-Liter-Flasche – perfekt für die
+						tägliche Küche oder zum Teilen mit Familie und Freunden.
+					</p>
+					<p class="pb-4 text-3xl font-extralight leading-snug">
+						Unser Olivenöl ist eine wahre Rarität: Nur etwa 100 Flaschen stehen
+						jedes Jahr zum Verkauf.
+					</p>
+				</div>
+			</div>
 		</div>
-
-		<h2 class="text-4xl pb-8 font-bodoni italic">Impressionen</h2>
-		<ImageSlider client:only="react" />
+		<div id="addtocart" class="intro bg-neutral-100 p-8 max-w-full mx-auto">
+			<div class="max-w-3xl mx-auto">
+				<ResponsiveImage
+					src="/EddaIllu.png"
+					alt="A beautiful olive oil logo"
+					sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+					srcSet={[{ src: "/EddaIllu.png", width: 480 }]}
+					class="p-8 col-span-2 justify-self-center"
+				/>
+				<AddToCart products={products} client:only="react" />
+				<Basket client:only="react" />
+			</div>
+		</div>
 	</div>
-</Layout>
 
-<style></style>
+	<style></style>
+</Layout>

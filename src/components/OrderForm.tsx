@@ -38,7 +38,7 @@ const OrderForm: React.FC<OrderFormProps> =  ({ onSubmit, isSubmitting}) => {
   
   // form settings
   const [isCompany, setIsCompany] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [isDifferentDelivery, setIsDifferentDelivery] = useState(false);
   
   // State for error handling

@@ -36,15 +36,15 @@ const getRemainingStock = async (): Promise<number | string> => {
 const stockData = await getRemainingStock();
 ---
 
-<div class="w-full grid grid-cols-2 bg-gray-50 gap-4 p-4">
-  <p class="text-2xl place-self-end font-bodoni">2024 Harvest:</p>
+<div class="w-full grid grid-cols-2 bg-gray-50 gap-4 p-4 mb-8">
+  <p class="text-2xl place-self-end font-poppins">2024 Harvest:</p>
   <p class="text-2xl">
     <span class="text-slate-800 font-bold">125</span>
     litri
   </p>
-  <p class="text-2xl place-self-end font-bodoni italic">Left for sale:</p>
+  <p class="text-2xl place-self-end font-poppins">Left for sale:</p>
   <p class="text-2xl">
-    <span class="text-lime-600 font-bold">{stockData}</span>
+    <span class="text-lime-600 font-extralight">{stockData}</span>
     litri
   </p>
 </div>

@@ -2,13 +2,11 @@
 import Layout from "../layouts/Layout.astro";
 import NavigationBar from "../components/NavigationBar";
 import CheckoutPage from "../components/CheckoutPage";
-import Basket from "../components/Basket";
 ---
 
 <Layout title="Olio Extra Vergine !!!">
 	<NavigationBar client:only="react" />
 	<div class="container max-w-screen mx-auto px-4">
-		<Basket client:only="react" />
 		<CheckoutPage client:only="react" />
 	</div>
 </Layout>

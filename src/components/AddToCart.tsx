@@ -40,7 +40,7 @@ const AddToCart: React.FC<{ products: Product[] }> = ({ products }) => {
   };
 
   return (
-    <div className="p-4 bg-white shadow-lg rounded-md w-80">
+    <div className="p-8 bg-white  w-full">
       <h2 className="text-xl font-bold mb-4">Add to Cart</h2>
 
       {/* Select Bottle Size */}
@@ -50,7 +50,7 @@ const AddToCart: React.FC<{ products: Product[] }> = ({ products }) => {
           value={selectedPid}
           title="Flaschen Volumen"
           onChange={handlePidChange}
-          className="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-lime-500"
+          className="w-full border border-gray-300 no-rounded px-3 py-2 focus:ring focus:ring-lime-500"
         >
           {products.map((product) => (
             <option key={product.pid} value={product.pid}>
@@ -79,13 +79,13 @@ const AddToCart: React.FC<{ products: Product[] }> = ({ products }) => {
 
       {/* Total Price */}
       <div className="mb-4 text-lg font-semibold">
-        Total Price: <span className="text-green-600">{price.toFixed(2)} €</span>
+        Total Price: <span className="text-white_smoke-400">{price.toFixed(2)} €</span>
       </div>
 
       {/* Add to Cart Button */}
       <button
         onClick={handleAddToBasket}
-        className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+        className="w-full bg-white_smoke-400 text-black py-2 rounded hover:bg-green-700 transition"
       >
         Add to Cart
       </button>
